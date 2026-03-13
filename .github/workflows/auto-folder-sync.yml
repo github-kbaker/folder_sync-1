@@ -1,0 +1,36 @@
+name: Full Repository Sync
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "**"
+
+permissions:
+  contents: write
+
+jobs:
+  sync-all:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync All Changes
+        run: |
+          echo "Syncing all repository changes..."
+
+      - name: Commit Updates
+        run: |
+          git add .
+          git diff --cached --quiet || git commit -m "Auto sync repository update"
+
+      - name: Push Changes
+        run: |
+          git push
