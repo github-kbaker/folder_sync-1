@@ -1,0 +1,36 @@
+name: Auto Sync Folder
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "sync-folder/**"
+
+permissions:
+  contents: write
+
+jobs:
+  sync-folder:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync Folder
+        run: |
+          echo "Syncing folder contents..."
+
+      - name: Commit Folder Updates
+        run: |
+          git add sync-folder/
+          git diff --cached --quiet || git commit -m "Auto sync folder update"
+
+      - name: Push Changes
+        run: |
+          git push
